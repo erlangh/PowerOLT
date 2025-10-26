@@ -104,8 +104,7 @@ export default function ODPManagement(){
             </div>
             <div style={{marginTop:12, display:'flex', gap:8}}>
               <button className="btn secondary" onClick={()=>openEdit(o as any)}>Edit</button>
--              <button className="btn secondary" onClick={()=>alert(`ODP ${o.name} @ (${(o as any).lat}, ${(o as any).lng})`)}>Details</button>
-+              <button className="btn secondary" onClick={()=>alert('ODP ' + o.name + ' @ (' + (o as any).lat + ', ' + (o as any).lng + ')')}>Details</button>
+              <button className="btn secondary" onClick={()=>alert('ODP ' + o.name + ' @ (' + (o as any).lat + ', ' + (o as any).lng + ')')}>Details</button>
                <button className="btn danger" onClick={()=>remove(o.id)}>Delete</button>
             </div>
           </div>
