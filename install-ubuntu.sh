@@ -162,7 +162,7 @@ EOF
 create_pm2_config() {
     log "Creating PM2 ecosystem configuration..."
     
-    cat > server/ecosystem.config.js << 'EOF'
+    cat > server/ecosystem.config.js << EOF
 module.exports = {
   apps: [{
     name: 'powerolt-api',
@@ -174,7 +174,9 @@ module.exports = {
     max_memory_restart: '1G',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3000,
+      CORS_ORIGIN: '${CORS_ORIGIN}',
+      DB_PATH: '${DB_PATH}'
     },
     error_file: '/home/' + process.env.USER + '/PowerOLT/logs/api-error.log',
     out_file: '/home/' + process.env.USER + '/PowerOLT/logs/api-out.log',
@@ -241,6 +243,20 @@ EOF
     # Test and reload Nginx
     sudo nginx -t
     sudo systemctl reload nginx
+}
+
+# Optional: collect backend environment overrides (interactive)
+collect_backend_env() {
+    info "Optional backend env configuration"
+    info "You can press Enter to keep defaults."
+    read -p "CORS_ORIGIN (comma-separated, blank=allow all): " input_cors
+    if [[ -n "$input_cors" ]]; then
+        CORS_ORIGIN="$input_cors"
+    fi
+    read -p "DB_PATH (blank=default powerolt.db in server dir): " input_db
+    if [[ -n "$input_db" ]]; then
+        DB_PATH="$input_db"
+    fi
 }
 
 # Optional SSL setup with Let's Encrypt
@@ -352,6 +368,7 @@ main() {
     install_nginx
     configure_firewall
     setup_powerolt
+    collect_backend_env
     create_pm2_config
     configure_nginx
     setup_ssl

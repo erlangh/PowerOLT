@@ -111,6 +111,7 @@ curl -fsSL https://raw.githubusercontent.com/erlangh/PowerOLT/main/install-ubunt
   - Install Node.js 18, PM2, Nginx, UFW
   - Clone repo, install dependencies, build frontend
   - Konfigurasi Nginx (proxy `/api` dan `/socket.io` ke backend)
+  - Menanyakan opsional env backend (`CORS_ORIGIN`, `DB_PATH`) dan menulisnya ke PM2
   - Menyiapkan PM2 dan systemd agar API auto-start
   - Opsi SSL otomatis jika `DOMAIN` dan `EMAIL` diberikan
 
