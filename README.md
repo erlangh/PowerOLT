@@ -49,6 +49,13 @@ PowerOLT adalah sistem manajemen FTTH (Fiber to the Home) yang komprehensif untu
 - **Socket.IO** untuk real-time communication
 - RESTful API architecture
 
+#### Environment Backend
+- `PORT`: port backend (default `4000`, installer/PM2 produksi gunakan `3000`)
+- `CORS_ORIGIN`: daftar origin (dipisah koma) yang diizinkan; jika tidak di-set maka semua origin diizinkan
+  - Contoh: `CORS_ORIGIN=https://example.com,https://admin.example.com`
+- `DB_PATH`: path file SQLite DB (default `powerolt.db` di folder `server`)
+  - Contoh: `DB_PATH=/home/ubuntu/PowerOLT/server/powerolt.db`
+
 ## Instalasi
 
 ### Prerequisites
