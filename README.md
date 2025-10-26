@@ -92,9 +92,28 @@ npm run dev
 Gunakan script auto-install yang disediakan:
 
 ```bash
-# Download dan jalankan script install
+# Download dan jalankan script install (tanpa SSL)
+curl -fsSL https://raw.githubusercontent.com/erlangh/PowerOLT/main/install-ubuntu.sh | bash
+
+# Opsi: jalankan dengan domain + email untuk SSL otomatis
+DOMAIN=example.com EMAIL=admin@example.com \
 curl -fsSL https://raw.githubusercontent.com/erlangh/PowerOLT/main/install-ubuntu.sh | bash
 ```
+
+- Script akan:
+  - Install Node.js 18, PM2, Nginx, UFW
+  - Clone repo, install dependencies, build frontend
+  - Konfigurasi Nginx (proxy `/api` dan `/socket.io` ke backend)
+  - Menyiapkan PM2 dan systemd agar API auto-start
+  - Opsi SSL otomatis jika `DOMAIN` dan `EMAIL` diberikan
+
+Konfigurasi environment (frontend):
+- Production: `.env.production` otomatis dibuat oleh script dengan:
+  - `VITE_API_URL=/api`
+  - `VITE_SOCKET_URL=` (kosong, gunakan origin saat ini)
+- Development: tambahkan `.env` jika diperlukan, contoh:
+  - `VITE_API_URL=http://localhost:4000/api`
+  - `VITE_SOCKET_URL=http://localhost:4000`
 
 Atau manual:
 

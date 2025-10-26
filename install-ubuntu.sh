@@ -146,6 +146,13 @@ setup_powerolt() {
     log "Installing client dependencies and building..."
     cd ../client
     npm install
+
+    # Write production env for client (use Nginx proxy paths)
+    cat > .env.production << 'EOF'
+VITE_API_URL=/api
+VITE_SOCKET_URL=
+EOF
+
     npm run build
     
     cd ..
@@ -185,21 +192,21 @@ EOF
 configure_nginx() {
     log "Configuring Nginx..."
     
-    # Get server IP
-    SERVER_IP=$(curl -s ifconfig.me || echo "localhost")
+    # Resolve server name: prefer DOMAIN env var, else public IP
+    SERVER_NAME=${DOMAIN:-$(curl -s ifconfig.me || echo "localhost")}
     
     sudo tee /etc/nginx/sites-available/powerolt << EOF
 server {
     listen 80;
-    server_name $SERVER_IP localhost;
-    
+    server_name $SERVER_NAME localhost;
+
     # Frontend static files
     location / {
         root /home/$(whoami)/PowerOLT/client/dist;
         index index.html;
         try_files \$uri \$uri/ /index.html;
     }
-    
+
     # API proxy
     location /api/ {
         proxy_pass http://localhost:3000;
@@ -212,7 +219,7 @@ server {
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_cache_bypass \$http_upgrade;
     }
-    
+
     # Socket.IO
     location /socket.io/ {
         proxy_pass http://localhost:3000;
@@ -234,6 +241,24 @@ EOF
     # Test and reload Nginx
     sudo nginx -t
     sudo systemctl reload nginx
+}
+
+# Optional SSL setup with Let's Encrypt
+setup_ssl() {
+    if [[ -n "$DOMAIN" && -n "$EMAIL" ]]; then
+        log "Setting up SSL with Let's Encrypt for $DOMAIN..."
+        sudo apt install -y certbot python3-certbot-nginx
+        sudo ufw allow 443 || true
+        # Ensure Nginx site is enabled and running before certbot
+        sudo systemctl restart nginx
+        # Obtain certificate and enable HTTPS redirect
+        sudo certbot --nginx -d "$DOMAIN" --email "$EMAIL" --agree-tos --no-eff-email --redirect --non-interactive || {
+            warning "Certbot failed. Check domain DNS and firewall, then run certbot manually."
+        }
+    else
+        info "Skipping SSL setup. Provide DOMAIN and EMAIL env vars to enable."
+        info "Example: DOMAIN=example.com EMAIL=admin@example.com bash install-ubuntu.sh"
+    fi
 }
 
 # Start services
@@ -282,8 +307,13 @@ show_info() {
     log "PowerOLT installation completed successfully!"
     echo
     info "Access your PowerOLT system at:"
-    info "  Web Interface: http://$SERVER_IP"
-    info "  API Endpoint: http://$SERVER_IP/api"
+    if [[ -n "$DOMAIN" ]]; then
+        info "  Web Interface: https://$DOMAIN"
+        info "  API Endpoint: https://$DOMAIN/api"
+    else
+        info "  Web Interface: http://$SERVER_IP"
+        info "  API Endpoint: http://$SERVER_IP/api"
+    fi
     echo
     info "Useful commands:"
     info "  Check status: pm2 status"
@@ -324,6 +354,7 @@ main() {
     setup_powerolt
     create_pm2_config
     configure_nginx
+    setup_ssl
     start_services
     create_systemd_service
     
