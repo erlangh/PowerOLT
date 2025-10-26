@@ -12,7 +12,10 @@ module.exports = {
     },
     env_production: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3000,
+      // Optional backend envs; set as needed
+      // CORS_ORIGIN: 'https://your-domain.com',
+      // DB_PATH: '/home/youruser/PowerOLT/server/powerolt.db'
     },
     error_file: '../logs/api-error.log',
     out_file: '../logs/api-out.log',
