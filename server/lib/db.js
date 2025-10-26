@@ -3,7 +3,8 @@ let db;
 
 function init() {
   if (db) return db;
-  db = new Database('powerolt.db');
+  const dbPath = process.env.DB_PATH || 'powerolt.db';
+  db = new Database(dbPath);
   db.pragma('journal_mode = WAL');
 
   // Tables
