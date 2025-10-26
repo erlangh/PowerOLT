@@ -107,6 +107,23 @@ curl -fsSL https://raw.githubusercontent.com/erlangh/PowerOLT/main/install-ubunt
   - Menyiapkan PM2 dan systemd agar API auto-start
   - Opsi SSL otomatis jika `DOMAIN` dan `EMAIL` diberikan
 
+### Update di VPS dengan update.sh
+
+Setelah instalasi awal, gunakan `update.sh` untuk pembaruan aman:
+
+```bash
+cd ~/PowerOLT
+bash update.sh
+```
+
+Apa yang dilakukan:
+- Backup SQLite `server/powerolt.db` ke folder `backups/`
+- `git pull` terbaru dari `main`
+- Update dependencies backend (`server`) dan rebuild frontend (`client`)
+- Reload PM2 (`ecosystem.config.js`) dan reload Nginx
+
+Jika perlu rollback, Anda bisa restore file backup DB dari `backups/`.
+
 Konfigurasi environment (frontend):
 - Production: `.env.production` otomatis dibuat oleh script dengan:
   - `VITE_API_URL=/api`
