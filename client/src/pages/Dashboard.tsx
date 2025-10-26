@@ -50,7 +50,7 @@ export default function Dashboard(){
         const temp = 36 + Math.floor(Math.random()*6); // mock temp per render
         return (
           <div key={olt.id}>
-            <OLTPanel olt={olt} onus={byOlt} tempC={temp} fans={fanRpms[olt.id]||[2688,2694]} />
+            <OLTPanel olt={olt} onus={byOlt} tempC={temp} />
             <FanRow fans={fanRpms[olt.id]||[2688,2694]} />
           </div>
         );

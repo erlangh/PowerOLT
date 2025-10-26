@@ -4,7 +4,6 @@ type Props = {
   olt: OLT;
   onus: ONU[];
   tempC: number;
-  fans: number[]; // rpm per fan
 };
 
 const iconByType = (type: string) => {
@@ -15,7 +14,7 @@ const iconByType = (type: string) => {
   return '🧭';
 };
 
-export default function OLTPanel({ olt, onus, tempC, fans }: Props){
+export default function OLTPanel({ olt, onus, tempC }: Props){
   const online = onus.filter(o=>o.status==='Online').length;
   const los = onus.filter(o=>o.status==='LOS').length;
   const dg = onus.filter(o=>o.status==='DyingGasp' || o.status==='Dying Gasp').length;
