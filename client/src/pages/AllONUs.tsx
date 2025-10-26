@@ -19,10 +19,11 @@ export default function AllONUs(){
   };
 
   useEffect(() => {
-    socket.on('onu_update', (u: Partial<ONU> & {id:number}) => {
+    const handler = (u: Partial<ONU> & {id:number}) => {
       setRows(prev => prev.map(p => p.id === u.id ? { ...p, ...u } : p));
-    });
-    return () => socket.off('onu_update');
+    };
+    socket.on('onu_update', handler);
+    return () => { socket.off('onu_update', handler); };
   }, []);
 
   const exportCsv = () => { window.location.href = 'http://localhost:4000/api/export/onus.csv'; };
