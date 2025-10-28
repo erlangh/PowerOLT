@@ -6,13 +6,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   const [showProfile, setShowProfile] = useState(false);
   const [oltOpen, setOltOpen] = useState(true);
-  const nav = [
-    { to: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { to: '/olts', label: 'FTTH / OLTs', icon: '🧭' },
-    { to: '/add-onu', label: 'Register ONU', icon: '➕' },
-    { to: '/all-onus', label: 'All ONUs', icon: '📋' },
-    { to: '/odp-map', label: 'ODP Map', icon: '🗺️' },
-  ];
+
   return (
     <div className="layout light">
       <aside className="sidebar light">

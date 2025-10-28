@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { api } from '../api';
 
 interface OnuTypeItem {
@@ -27,7 +27,7 @@ export default function OnuType() {
 
   useEffect(() => { fetchItems(); }, []);
 
-  const addItem = async (e: React.FormEvent) => {
+  const addItem = async (e: FormEvent) => {
     e.preventDefault(); setError(null);
     try {
       const res = await api.post('/onu-types', newItem);
